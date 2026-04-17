@@ -1,0 +1,108 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Sistema de Comentarios</h1>
+    <p>Consulta comentarios y publica el tuyo en segundos.</p>
+  </div>
+
+  <div class="card">
+    <h2>Registrar comentario</h2>
+    <form #comentarioForm="ngForm" (ngSubmit)="registrarComentario(comentarioForm)">
+      <label for="nombre">Nombre</label>
+      <input
+        id="nombre"
+        name="nombre"
+        [(ngModel)]="nuevo.nombre"
+        required
+        placeholder="Ingresa tu nombre"
+      />
+
+      <label for="correo">Correo</label>
+      <input
+        id="correo"
+        name="correo"
+        type="email"
+        [(ngModel)]="nuevo.correo"
+        required
+        email
+        placeholder="Ingresa tu correo"
+      />
+
+      <label for="comentario">Comentario</label>
+      <textarea
+        id="comentario"
+        name="comentario"
+        [(ngModel)]="nuevo.comentario"
+        required
+        rows="4"
+        placeholder="Escribe tu comentario"
+      ></textarea>
+
+      <button type="submit">Publicar comentario</button>
+    </form>
+
+    <p class="success" *ngIf="mensaje">{{ mensaje }}</p>
+  </div>
+
+  <div class="card">
+    <h2>Listado de comentarios</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total</span>
+        <strong class="stat-value">{{ totalComentarios }}</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Desde API</span>
+        <strong class="stat-value">{{ comentarios.length }}</strong>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Creados en sesión</span>
+        <strong class="stat-value">{{ comentariosCreados.length }}</strong>
+      </div>
+    </div>
+
+    <p *ngIf="cargando" class="meta">Cargando comentarios...</p>
+    <p *ngIf="errorCarga" class="error">{{ errorCarga }}</p>
+
+    <div *ngIf="comentariosCreados.length > 0">
+      <h3 class="section-title">Comentarios creados en esta sesión</h3>
+      <div *ngFor="let item of comentariosCreados" class="comment-item">
+        <div class="comment-header">
+          <h4 class="comment-name">{{ item.name }}</h4>
+          <button class="btn-delete" type="button" (click)="pedirConfirmacionEliminar(item.id)">
+            Eliminar
+          </button>
+        </div>
+        <p class="meta" *ngIf="item.email">Correo: {{ item.email }}</p>
+        <p>{{ item.body }}</p>
+        <p class="meta" *ngIf="item.createdAt">Fecha: {{ item.createdAt }}</p>
+        <div class="confirm-box" *ngIf="comentarioAEliminarId === item.id">
+          <span>¿Eliminar este comentario?</span>
+          <div class="confirm-actions">
+            <button type="button" class="btn-confirm" (click)="eliminarComentario(item)">Sí, eliminar</button>
+            <button type="button" class="btn-cancel" (click)="cancelarEliminar()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Comentarios desde API</h3>
+    <div *ngFor="let item of comentarios" class="comment-item">
+      <div class="comment-header">
+        <h4 class="comment-name">{{ item.name }}</h4>
+        <button class="btn-delete" type="button" (click)="pedirConfirmacionEliminar(item.id)">
+          Eliminar
+        </button>
+      </div>
+      <p class="meta" *ngIf="item.email">Correo: {{ item.email }}</p>
+      <p>{{ item.body }}</p>
+      <p class="meta" *ngIf="item.createdAt">Fecha: {{ item.createdAt }}</p>
+      <div class="confirm-box" *ngIf="comentarioAEliminarId === item.id">
+        <span>¿Eliminar este comentario?</span>
+        <div class="confirm-actions">
+          <button type="button" class="btn-confirm" (click)="eliminarComentario(item)">Sí, eliminar</button>
+          <button type="button" class="btn-cancel" (click)="cancelarEliminar()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
